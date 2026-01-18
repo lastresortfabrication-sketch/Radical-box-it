@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RADICAL BOX-IT</title>
+    <style>
+        :root {
+            --pink: #FF00FF;
+            --purple: #9D00FF;
+            --teal: #00DBDE;
+            --silver: #C0C0C0;
+            --chartreuse: #7FFF00;
+            --black: #000000;
+        }
+
+        body {
+            background-color: white;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            border: 15px solid;
+            border-image: linear-gradient(45deg, var(--pink), var(--teal), var(--chartreuse), var(--purple)) 1;
+            min-height: 90vh;
+        }
+
+        /* 80s Retro Header */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            font-style: italic;
+            color: var(--black);
+            text-shadow: 3px 3px var(--teal), -3px -3px var(--pink);
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            background: var(--chartreuse);
+            display: inline-block;
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: rotate(-2deg);
+            margin-top: 10px;
+        }
+
+        /* Game Board */
+        #game-container {
+            position: relative;
+            background: white;
+            padding: 20px;
+            border: 4px solid black;
+            box-shadow: 10px 10px 0px var(--purple);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 40px);
+            grid-template-rows: repeat(7, 40px);
+            gap: 20px;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+
+        /* Controls */
+        #controls {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: var(--pink);
+            color: white;
+            border: 4px solid black;
+            box-shadow: 5px 5px 0px var(--teal);
+            text-transform: uppercase;
+        }
+
+        button:active {
+            box-shadow: 0px 0px 0px;
+            transform: translate(5px, 5px);
+        }
+
+        .dice-display {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .die {
+            width: 50px;
+            height: 50px;
+            border: 3px solid black;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: white;
+        }
+
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RADICAL BOX-IT</h1>
+        <div class="subtitle">SHAKE IT UP!</div>
+    </header>
+
+    <div id="game-container">
+        <div class="dice-display">
+            <div id="die1" class="die">?</div>
+            <div id="die2" class="die">?</div>
+        </div>
+        
+        <div id="grid" class="grid">
+            </div>
+
+        <div id="status">Roll the dice to start your turn!</div>
+    </div>
+
+    <div id="controls">
+        <button onclick="rollDice()">Roll Dice!</button>
+    </div>
+
+    <script>
+        const colors = ['pink', 'purple', 'teal', 'silver', 'chartreuse'];
+        const cssColors = {
+            pink: '#FF00FF',
+            purple: '#9D00FF',
+            teal: '#00DBDE',
+            silver: '#C0C0C0',
+            chartreuse: '#7FFF00',
+            black: '#000000'
+        };
+
+        let dotData = [];
+
+        function initGrid() {
+            const gridElement = document.getElementById('grid');
+            gridElement.innerHTML = '';
+            dotData = [];
+
+            for (let i = 0; i < 49; i++) {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.backgroundColor = cssColors[randomColor];
+                gridElement.appendChild(dot);
+                dotData.push(randomColor);
+            }
+        }
+
+        function rollDice() {
+            const d1 = Math.floor(Math.random() * 6);
+            const d2 = Math.floor(Math.random() * 6);
+            
+            const die1Val = d1 === 5 ? 'black' : colors[d1];
+            const die2Val = d2 === 5 ? 'black' : colors[d2];
+
+            updateDieDisplay('die1', die1Val);
+            updateDieDisplay('die2', die2Val);
+
+            document.getElementById('status').innerText = `You rolled ${die1Val.toUpperCase()} and ${die2Val.toUpperCase()}!`;
+        }
+
+        function updateDieDisplay(id, color) {
+            const el = document.getElementById(id);
+            el.style.backgroundColor = cssColors[color];
+            el.innerText = color === 'black' ? 'WILD' : '';
+            el.style.color = (color === 'black' || color === 'purple') ? 'white' : 'black';
+        }
+
+        // Initialize the board on load
+        initGrid();
+    </script>
+</body>
+</html>
